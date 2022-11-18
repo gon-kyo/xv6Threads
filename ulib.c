@@ -113,7 +113,7 @@ int thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2)
 }
 
 void lock_acquire(lock_t *lock){
-	while(xchg(&lock->state, 1) != 0);
+	while(xchg(&lock->state, 1) == 1);
 }
 
 void lock_release(lock_t *lock){

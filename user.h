@@ -2,7 +2,7 @@ struct stat;
 struct rtcdate;
 
 typedef struct lock_t {
-	int state;
+	uint state;
 } lock_t;
 
 
