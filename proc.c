@@ -125,6 +125,7 @@ int clone(void(*fcn)(void *, void *), void *arg1, void *arg2, void *stack) {
 }
 
 int join(void** stack) {
+  acquire(&ptable.lock)
   if(stack == NULL) {
     return -1;
   }
