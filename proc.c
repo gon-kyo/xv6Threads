@@ -120,11 +120,16 @@ found:
 
 
 int clone(void(*fcn)(void *, void *), void *arg1, void *arg2, void *stack) {
-	int process = wait();
+	
+
 }
 
 int join(void** stack) {
-	return 0;
+  if(stack == NULL) {
+    return 0;
+  }
+	int pid = wait();
+
 }
 
 void
