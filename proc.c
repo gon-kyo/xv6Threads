@@ -120,18 +120,51 @@ found:
 
 
 int clone(void(*fcn)(void *, void *), void *arg1, void *arg2, void *stack) {
+  int i, pid;
   struct proc *np;
-  if((np = allocproc()) == 0) {
+  struct proc *curproc = myproc();
+
+  // Allocate process.
+  if((np = allocproc()) == 0){
     return -1;
   }
-  np->pgdir=proc->pgdir; 
-  np->sz = proc->sz;
-  np->parent = proc;
-  np->sz = proc->sz;
-  np->parent = proc;
-  *np->tf = *proc->tf; /* trap frame */
+
+  // Copy process state from proc.
+  if((np->pgdir = copyuvm(curproc->pgdir, curproc->sz)) == 0){
+    kfree(np->kstack);
+    np->kstack = 0;
+    np->state = UNUSED;
+    return -1;
+  }
+  np->sz = curproc->sz;
+  np->parent = curproc;
+  *np->tf = *curproc->tf;
+
+  // Clear %eax so that fork returns 0 in the child.
+  np->tf->eax = 0;
+
+  for(i = 0; i < NOFILE; i++)
+    if(curproc->ofile[i])
+      np->ofile[i] = filedup(curproc->ofile[i]);
+  np->cwd = idup(curproc->cwd);
+
   
 
+
+  void* userStack[3];
+  stackPointer = (uint)stack; //+PGSIZE maybe??
+
+
+
+  pid = np->pid;
+
+  acquire(&ptable.lock);
+
+  np->state = RUNNABLE;
+
+  release(&ptable.lock);
+
+  return pid;
 }
 
 int join(void** stack) {
