@@ -106,22 +106,25 @@ memmove(void *vdst, const void *vsrc, int n)
 }
 
 int thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2){
-	return 0;
+	void* stack;
+	stack = malloc(PGSIZE);
+	return clone(start_routine, arg1, arg2, stack);
 }
 
 void lock_acquire(lock_t * lock){
-	
+	while(xchg(&lock->state, 1) != 0);
 }
 
 void lock_release(lock_t * lock){
-	lock->state = 0;
+	xchg(&lock->state, 0);
 }
 
 void lock_init(lock_t * lock){
-	//lock = malloc(sizeof(lock_t));
 	lock->state = 0;
 }
 
 int thread_join(){
-return 0;
+  void * stackPtr;
+  int x = join(&stackPtr);
+  return x;
 }
