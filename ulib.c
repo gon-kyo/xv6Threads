@@ -1,6 +1,7 @@
 #include "types.h"
 #include "stat.h"
 #include "fcntl.h"
+#include "mmu.h"
 #include "user.h"
 #include "x86.h"
 
@@ -112,11 +113,11 @@ int thread_create(void (*start_routine)(void *, void *), void *arg1, void *arg2)
 }
 
 void lock_acquire(lock_t * lock){
-	while(xchg(&lock->state, 1) != 0);
+	while(xchg(lock->state, 1) != 0);
 }
 
 void lock_release(lock_t * lock){
-	xchg(&lock->state, 0);
+	xchg(lock->state, 0);
 }
 
 void lock_init(lock_t * lock){
