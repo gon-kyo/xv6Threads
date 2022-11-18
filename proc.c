@@ -120,7 +120,17 @@ found:
 
 
 int clone(void(*fcn)(void *, void *), void *arg1, void *arg2, void *stack) {
-	
+  struct proc *np;
+  if((np = allocproc()) == 0) {
+    return -1;
+  }
+  np->pgdir=proc->pgdir; 
+  np->sz = proc->sz;
+  np->parent = proc;
+  np->sz = proc->sz;
+  np->parent = proc;
+  *np->tf = *proc->tf; /* trap frame */
+  
 
 }
 
