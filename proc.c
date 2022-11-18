@@ -126,9 +126,28 @@ int clone(void(*fcn)(void *, void *), void *arg1, void *arg2, void *stack) {
 
 int join(void** stack) {
   if(stack == NULL) {
-    return 0;
+    return -1;
   }
 	int pid = wait();
+  struct proc* process = ptable.proc;
+  for(process; process < &ptable.proc[NPROC]; process++) {
+    if(process->pid == pid) {
+      stack[0] = process -> sp;
+      kfree(p->kstack);
+      p->kstack = 0;
+      p->parent = 0;
+      p->name[0] = 0;
+      p->killed = 0;
+      p->state = UNUSED;
+      stack[0]=p->sp;
+      release(&ptable.lock)
+
+      return pid;
+
+    }
+
+  }
+  return -1;
 
 }
 
